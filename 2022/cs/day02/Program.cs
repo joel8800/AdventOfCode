@@ -20,8 +20,8 @@ foreach (string line in input)
 {
     string[] plays = line.Split(' ');
 
-    scorePt1 += PlayRound(plays[0], plays[1]);
-    scorePt2 += PlayForResult(plays[0], plays[1]);
+    scorePt1 += PlayRound(line);
+    scorePt2 += PlayForResult(line);
 }
 
 int answerPt1 = scorePt1;
@@ -38,84 +38,43 @@ Console.WriteLine($"Part 2: {answerPt2}");
 // player plays their shape
 // X = rock, Y = paper, Z = scissor
 // score = shape selected (1, 2, 3) + outcome (0, 3, 6)
-int PlayRound(string opponent, string player)
+int PlayRound(string line)  //(string opponent, string player)
 {
     int score = 0;
 
-    switch (player)
+    switch (line)
     {
-        case "X": score = 1; break;
-        case "Y": score = 2; break;
-        case "Z": score = 3; break;
+        case "A X": score = 1 + 3; break;  // rock vs rock    : draw
+        case "A Y": score = 2 + 6; break;  // rock vs paper   : win
+        case "A Z": score = 3 + 0; break;  // rock vs scissor : lose
+        case "B X": score = 1 + 0; break;  // paper vs rock    : lose
+        case "B Y": score = 2 + 3; break;  // paper vs paper   : draw
+        case "B Z": score = 3 + 6; break;  // paper vs scissor : win
+        case "C X": score = 1 + 6; break;  // scissors vs rock    : win
+        case "C Y": score = 2 + 0; break;  // scissors vs paper   : lose
+        case "C Z": score = 3 + 3; break;  // scissors vs scissor : draw
     }
-
-    switch (opponent)
-    {
-        case "A":   // rock
-            switch (player)
-            {
-                case "X": score += 3; break;  // vs rock    : draw
-                case "Y": score += 6; break;  // vs paper   : win
-                case "Z": score += 0; break;  // vs scissor : lose
-            }
-            ; break;
-        case "B":   // paper
-            switch (player)
-            {
-                case "X": score += 0; break;  // vs rock    : loser
-                case "Y": score += 3; break;  // vs paper   : draw
-                case "Z": score += 6; break;  // vs scissor : win
-            }; break;
-        case "C":   // scissors
-            switch (player)
-            {
-                case "X": score += 6; break;  // vs rock    : win
-                case "Y": score += 0; break;  // vs paper   : lose
-                case "Z": score += 3; break;  // vs scissor : draw
-            }; break;
-    }
-
     return score;
 }
 
 // player plays shape to achieve result
 // X = lose, Y = draw, Z = win
 // score = shape selected (1, 2, 3) + outcome (0, 3, 6)
-int PlayForResult(string opponent, string player)
+int PlayForResult(string line)  //(string opponent, string player)
 {
     int score = 0;
 
-    switch (player)
+    switch (line)
     {
-        case "X": score = 0; break;
-        case "Y": score = 3; break;
-        case "Z": score = 6; break;
+        case "A X": score = 3 + 0; break;  // rock, must lose, play scissor
+        case "A Y": score = 1 + 3; break;  // rock, must draw, play rock
+        case "A Z": score = 2 + 6; break;  // rock, must win, play paper
+        case "B X": score = 1 + 0; break;  // paper, must lose, play rock
+        case "B Y": score = 2 + 3; break;  // paper, must draw, play paper
+        case "B Z": score = 3 + 6; break;  // paper, must win, play scissor
+        case "C X": score = 2 + 0; break;  // scissor, must lose, play paper
+        case "C Y": score = 3 + 3; break;  // scissor, must draw, play scissor
+        case "C Z": score = 1 + 6; break;  // scissor, must win, play rock
     }
-
-    switch (opponent)
-    {
-        case "A":
-            switch (player)
-            {
-                case "X": score += 3; break;  // must lose, play scissor
-                case "Y": score += 1; break;  // must draw, play rock
-                case "Z": score += 2; break;  // must win, play paper
-            }; break;
-        case "B":
-            switch (player)
-            {
-                case "X": score += 1; break;  // must lose, play rock
-                case "Y": score += 2; break;  // must draw, play paper
-                case "Z": score += 3; break;  // must win, play scissor
-            }; break;
-        case "C":
-            switch (player)
-            {
-                case "X": score += 2; break;  // must lose, play paper
-                case "Y": score += 3; break;  // must draw, play scissor
-                case "Z": score += 1; break;  // must win, play rock
-            }; break;
-    }
-
     return score;
 }
