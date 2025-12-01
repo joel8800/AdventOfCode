@@ -1,6 +1,9 @@
 # Advent of Code Solutions
 
-Solutions for Advent of Code organized by year and language.  Starting with C#
+Solutions for Advent of Code organized by year and language.  Starting with C#.
+
+### C#
+Each year has it's own Visual Studio solution files (.slnx), with each day being it's own project.
 
 ## Structure
 - cs – C# (.NET)
@@ -8,6 +11,8 @@ Solutions for Advent of Code organized by year and language.  Starting with C#
 - js – JavaScript (future)
 
 ## How to Run
+Input files should be named input.txt and reside in the same folder as the source
+
 ### C# (.NET 10 allows running from the CLI, like a script)
 dotnet run 2025/cs/day01/Program.cs
 
