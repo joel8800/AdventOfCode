@@ -5,52 +5,34 @@ Console.WriteLine("Day 01: Secret Entrance");
 string[] input = InputReader.ReadLines("input.txt");
 
 int position = 50;
-int zeros = 0;
-int crossings = 0;
+int zerosSeen = 0;
+int endAtZero = 0;
 
 foreach (string line in input)
 {
-    int startPos = position;
-    bool left = line[0] == 'L' ? true : false;
+    int dir = line[0] == 'L' ? -1 : 1;
+    int clicks = Convert.ToInt32(line[1..]);
 
-    int clicks = Convert.ToInt32(line.Substring(1));
-    int fullRotations = clicks / 100;
-    clicks %= 100;
-
-    if (left)
+    // simulate dial turning
+    for (int i = 0; i < clicks; i++)
     {
-        position -= clicks;
+        position = (position + dir + 100) % 100;
 
-        if (position < 0)
-        {
-            position += 100;
-
-            if (startPos != 0)
-                crossings++;
-        }
-    }
-    else
-    {
-        position += clicks;
-
-        if (position > 100)
-            crossings += 1;
-
-        position %= 100;
+        if (position == 0)
+            zerosSeen++;
     }
 
     if (position == 0)
-        zeros += 1;
-    crossings += fullRotations;
+        endAtZero += 1;
 
-    //Console.WriteLine($"{line,-6}: val:{clicks,-4} rotations:{fullRotations,-4} crossings:{crossings,-4} zero:{zeros,-4} pos:{position,-4}");
+    //Console.WriteLine($"{line,-6}: clicks:{clicks * dir,4}: position:{position, 4}");
 }
 
-int answerPt1 = zeros;
+int answerPt1 = endAtZero;
 
 // ----------------------------------------------------------------------------
 
-int answerPt2 = zeros + crossings;
+int answerPt2 = zerosSeen;
 
 Console.WriteLine($"Part 1: {answerPt1}");
 Console.WriteLine($"Part 2: {answerPt2}");
