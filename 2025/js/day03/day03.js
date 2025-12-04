@@ -1,10 +1,9 @@
 ﻿const fs = require('fs');
 
-console.log('Day 02: ');
+console.log('Day 03: ');
 
 const data = fs.readFileSync('inputSample.txt', 'utf8').split('\r\n');
 console.log('Loaded ' + data.length + ' lines');
-
 
 console.log('Part 1: ' + 0);
 console.log('Part 2: ' + 0);
