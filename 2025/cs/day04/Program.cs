@@ -11,13 +11,10 @@ for (int row = 0; row < input.Count; row++)
 {
     for (int col = 0; col < input[row].Count; col++)
     {
-        if (input[row][col] == '@')
+        if (IsAccessible(input, row, col))
         {
-            if (IsAccessible(input, row, col))
-            {
-                accessiblePositions.Add((row, col));
-                accessible++;
-            }
+            accessiblePositions.Add((row, col));
+            accessible++;
         }
     }
 }
@@ -27,10 +24,9 @@ int answerPt1 = accessible;
 
 // ----------------------------------------------------------------------------
 
-
-accessible = 1;
 int removedRolls = 0;
 
+accessible = 1;
 while (accessible > 0)
 {
     accessible = 0;
@@ -40,13 +36,10 @@ while (accessible > 0)
     {
         for (int col = 0; col < input[row].Count; col++)
         {
-            if (input[row][col] == '@')
+            if (IsAccessible(input, row, col))
             {
-                if (IsAccessible(input, row, col))
-                {
-                    accessiblePositions.Add((row, col));
-                    accessible++;
-                }
+                accessiblePositions.Add((row, col));
+                accessible++;
             }
         }
     }
@@ -71,46 +64,29 @@ Console.WriteLine($"Part 2: {answerPt2}");
 bool IsAccessible(List<List<char>> grid, int row, int col)
 {
     int adjacentRolls = 0;
-    int numRows = grid.Count;
-    int numCols = grid[0].Count;
 
     if (IsInbounds(grid, row, col) == false)
         return false;
 
-    // Check row above
-    if (row > 0 && col - 1 >= 0)
-        if (grid[row - 1][col - 1] == '@')
-            adjacentRolls++;
+    // skip if not a roll
+    if (grid[row][col] != '@')
+        return false;
 
-    if (row > 0)
-        if (grid[row - 1][col] == '@')
-            adjacentRolls++;
-
-    if (row > 0 && col + 1 < numCols)
-        if (grid[row - 1][col + 1] == '@')
-            adjacentRolls++;
-
-    // Check same row
-    if (col > 0)
-        if (grid[row][col - 1] == '@')
-            adjacentRolls++;
+    // directions to check: [NW, N, NE, W, E, SW, S, SE]
+    List<(int r, int c)> directions = 
+        [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1),  (1, 0),  (1, 1)];
     
-    if (col + 1 < numCols)
-        if (grid[row][col + 1] == '@')
-            adjacentRolls++;
-
-    // check row below
-    if (row + 1 < numRows && col - 1 >= 0)
-        if (grid[row + 1][col - 1] == '@') 
-            adjacentRolls++;
-    
-    if (row + 1 < numRows)
-        if (grid[row + 1][col] == '@')
-            adjacentRolls++;
-    
-    if (row + 1 < numRows && col + 1 < numCols)
-        if (grid[row + 1][col + 1] == '@')
-            adjacentRolls++;
+    // check all directions
+    foreach (var (dr, dc) in directions)
+    {
+        int newRow = row + dr;
+        int newCol = col + dc;
+        if (IsInbounds(grid, newRow, newCol))
+        {
+            if (grid[newRow][newCol] == '@')
+                adjacentRolls++;
+        }
+    }   
 
     if (adjacentRolls < 4)
         return true;
