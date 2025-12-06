@@ -1,6 +1,4 @@
 <Solution>
-  <Folder Name="/cs/">
-    <Project Path="day01/day01.csproj" />
-    <Project Path="day02/day02.csproj" />
-  </Folder>
+  <Project Path="day01/day01.csproj" />
+  <Project Path="day02/day02.csproj" />
 </Solution>
