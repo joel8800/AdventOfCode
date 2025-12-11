@@ -419,6 +419,5 @@ FodyWeavers.xsd
 
 # Advent of Code input files
 input.txt
-inputSample.txt
-
+inputSample*.txt
 
