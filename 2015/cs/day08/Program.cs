@@ -10,8 +10,7 @@ int memoryLength = 0;
 foreach (string line in input)
 {
     string decoded = DecodeLine(line);
-    Console.WriteLine($"Code: {line}  =>  Decoded: {decoded}");
-    Console.WriteLine($"   Code Length: {line.Length}, Memory Length: {decoded.Length}");
+    
     codeLength += line.Length;
     memoryLength += decoded.Length;
 }
