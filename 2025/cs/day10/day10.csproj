@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Z3" Version="4.12.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Common">
       <HintPath>..\..\..\Common\bin\Debug\net10.0\Common.dll</HintPath>
     </Reference>
