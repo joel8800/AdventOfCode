@@ -14,37 +14,29 @@ foreach (string line in input)
     jBoxes.Add((coords[0], coords[1], coords[2]));
 }
 
-//// get distances between every junction box
-//List<(int i, int j, double d)> distList = [];
-//for (int i = 0; i < jBoxes.Count; i++)
-//{
-//    for (int j = i + 1; j < jBoxes.Count; j++)
-//    {
-//        double distance = GetDistance(jBoxes[i], jBoxes[j]);
-//        distList.Add((i, j, distance));
-//    }
-//}
-//List<(int i, int j, double d)> sorted = distList.OrderBy(b => b.d).ToList();
+// calculate distances between each pair of junction boxes
+// store the distances in a sorted list of tuples (i, j, distance)
+List<(int i, int j, double d)> distList = [];
+for (int i = 0; i < jBoxes.Count; i++)
+{
+    for (int j = i + 1; j < jBoxes.Count; j++)
+    {
+        double distance = GetDistance(jBoxes[i], jBoxes[j]);
+        distList.Add((i, j, distance));
+    }
+}
+List<(int i, int j, double d)> sortedByDist = [.. distList.OrderBy(b => b.d)];
 
-
-// get distances between every junction box
-List<int> indexes = [.. Enumerable.Range(0, jBoxes.Count)];
-var combinations = indexes
-    .SelectMany((first, i) => indexes
-    .Skip(i + 1)                            // avoid duplicates and self-pairing
-    .Select(next => new {i = first, j = next, d = GetDistance(jBoxes[first], jBoxes[next])}))
-    .OrderBy(x => x.d)
-    .ToList();
-
+// create a list of sets to hold connected junction boxes
 List<HashSet<int>> circuits = [];
 
-int linesProcessed = 0;
-for (int x = 0; x < combinations.Count; x++)    //.Count; x++)
+int boxesProcessed = 0;
+for (int x = 0; x < sortedByDist.Count; x++)
 {
-    linesProcessed++;
+    boxesProcessed++;
 
-    int box1 = combinations[x].i;   // sorted[x].i;
-    int box2 = combinations[x].j;   // sorted[x].j;
+    int box1 = sortedByDist[x].i;
+    int box2 = sortedByDist[x].j;
     int box1set = -1;
     int box2set = -1;
 
@@ -57,18 +49,18 @@ for (int x = 0; x < combinations.Count; x++)    //.Count; x++)
             box2set = i;
     }
 
-    // both boxes open, create new set and add to connected
+    // both boxes are unconnected, create new set and add to circuits
     if (box1set == -1 && box2set == -1)
     {
         HashSet<int> tmp = [box1, box2];
         circuits.Add(tmp);
     }
 
-    // box1 open, box2 connected
+    // box1 not connected, box2 connected
     if (box1set == -1 && box2set != -1)
         circuits[box2set].Add(box1);
 
-    // box1 connected, box2 open
+    // box1 connected, box2 not connected
     if (box1set != -1 && box2set == -1)
         circuits[box1set].Add(box2);
 
@@ -92,9 +84,10 @@ for (int x = 0; x < combinations.Count; x++)    //.Count; x++)
     }
 
     // part 1: get junction box count of top 3 circuits after 1000 iterations
-    if (linesProcessed == 1000)
+    // if using inputSample, there are 20 junction boxes, and we check after 10 iterations
+    if (boxesProcessed == 1000 || (jBoxes.Count == 20 && boxesProcessed == 10))
     {
-        List<int> counts = [.. circuits.Select(c => c.Count)];        
+        List<int> counts = [.. circuits.Select(c => c.Count)];
         counts.Sort();
         answerPt1 = counts.TakeLast(3).Aggregate((a, b) => a * b);
     }

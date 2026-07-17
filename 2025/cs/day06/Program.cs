@@ -5,11 +5,12 @@ Console.WriteLine("Day 06: Trash Compactor");
 
 string[] input = InputReader.ReadLines("input.txt");
 
-int OPERAND_COUNT = input.Length - 1;
-int OPERATOR_INDEX = input.Length - 1;
+int OPERAND_COUNT = input.Length - 1;   // rows in input with numbers
+int OPERATOR_INDEX = input.Length - 1;  // last row has the operators: + or *
 
-// get operands
+// get operands, convert each row into a list of numbers
 List<List<long>> operandLists = [];
+//List<List<string>> problemText = [];
 for (int i = 0; i < OPERAND_COUNT; i++)
 {
     MatchCollection mc = Regex.Matches(input[i], @"\d+");
@@ -23,7 +24,7 @@ List<char> operators = [.. matches.Select(m => m.Value[0])];
 
 long sumTotalPt1 = 0;
 
-// calculate each column of numbers
+// calculate each set of numbers
 for (int i = 0; i < operators.Count; i++)
 {
     List<long> operands = [.. operandLists.Select(r => r[i])];
@@ -31,28 +32,23 @@ for (int i = 0; i < operators.Count; i++)
     if (operators[i] == '+')
         sumTotalPt1 += operands.Aggregate((a, b) => a + b);
     else
-        sumTotalPt1 += operands.Aggregate((a, b) => a * b);    
+        sumTotalPt1 += operands.Aggregate((a, b) => a * b);
 }
 
 // ----------------------------------------------------------------------------
-
-// get widths of each operator section
-List<int> widths = [];
-for (int i = 1; i < indexes.Count; i++)
-    widths.Add(indexes[i] - indexes[i - 1]);
-widths.Add(input[OPERAND_COUNT - 1].Length - indexes.Last());
 
 long sumTotalPt2 = 0;
 
 // for each index, transpose numbers and calculate
 for (int i = 0; i < indexes.Count; i++)
 {
-    // width offset
+    // get the index of the current set and the width of the longest number
     int offset = indexes[i];
+    int width = operandLists.Max(s => s[i].ToString().Length);
 
-    // get operands from columns of numbers
-    List<long> operands = [];    
-    for (int col = 0; col < widths[i]; col++)
+    // transpose
+    List<long> operands = [];
+    for (int col = 0; col < width; col++)
     {
         List<char> op = [];
 
@@ -60,9 +56,7 @@ for (int i = 0; i < indexes.Count; i++)
         for (int row = 0; row < OPERAND_COUNT; row++)
             op.Add(input[row][col + offset]);
 
-        // only process if not all spaces
-        if (op.All(c => c == ' ') == false)
-            operands.Add(long.Parse(string.Join("", op)));
+        operands.Add(long.Parse(string.Join("", op)));
     }
 
     // calculate based on operator
@@ -76,4 +70,3 @@ Console.WriteLine($"Part 1: {sumTotalPt1}");
 Console.WriteLine($"Part 2: {sumTotalPt2}");
 
 // ============================================================================
-

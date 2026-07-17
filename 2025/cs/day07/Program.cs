@@ -7,9 +7,9 @@ List<List<char>> input = InputReader.ReadFileToCharGrid("input.txt");
 int splits = 0;
 int rowCount = input.Count;
 int colCount = input[0].Count;
-(int r, int c) start = (0, input[0].IndexOf('S'));
+int start = input[0].IndexOf('S');
 
-HashSet<int> beams = [start.c];
+HashSet<int> beams = [start];
 List<int> beamColumns = [.. beams];
 
 for (int row = 0; row < rowCount; row++)
@@ -19,9 +19,9 @@ for (int row = 0; row < rowCount; row++)
         if (input[row][beam] == '^')
         {
             splits++;
-            beams.Add(beam - 1);
-            beams.Add(beam + 1);
-            beams.Remove(beam);
+            beams.Add(beam - 1);    // split left
+            beams.Add(beam + 1);    // split right
+            beams.Remove(beam);     // remove the original beam
         }
     }
     beamColumns = [.. beams];
@@ -31,13 +31,15 @@ int answerPt1 = splits;
 
 // ----------------------------------------------------------------------------
 
-var timeLines = new long[colCount];
+List<long> timeLines = [.. Enumerable.Repeat(0, colCount)];
 for (int row = 0; row < rowCount; row++)
 {
-    var tmpTimeLines = new long[colCount];
+    // create temporary time lines list to handle splits
+    List<long> tmpTimeLines = [.. Enumerable.Repeat(0, colCount)];
     for (int col = 0; col < colCount; col++)
     {
-        // add timeLines for splits
+        // add left and right timelines at splitters
+        // otherwise beam continues
         if (input[row][col] == '^')
         {
             if (col > 0)
@@ -50,8 +52,9 @@ for (int row = 0; row < rowCount; row++)
             tmpTimeLines[col] += timeLines[col];
     }
     if (row == 0)
-        tmpTimeLines[start.c] = 1;
-    
+        tmpTimeLines[start] = 1;
+
+    // update main timeLines list
     timeLines = tmpTimeLines;
 }
 

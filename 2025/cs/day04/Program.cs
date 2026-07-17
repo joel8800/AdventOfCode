@@ -4,32 +4,27 @@ Console.WriteLine("Day 04: Printing Department");
 
 List<List<char>> input = InputReader.ReadFileToCharGrid("input.txt");
 
-int accessible = 0;
+// create a list of accessible positions
 List<(int row, int col)> accessiblePositions = [];
-
 for (int row = 0; row < input.Count; row++)
 {
     for (int col = 0; col < input[row].Count; col++)
     {
         if (IsAccessible(input, row, col))
-        {
             accessiblePositions.Add((row, col));
-            accessible++;
-        }
     }
 }
 
+int answerPt1 = accessiblePositions.Count;
 
-int answerPt1 = accessible;
 
 // ----------------------------------------------------------------------------
 
 int removedRolls = 0;
 
-accessible = 1;
-while (accessible > 0)
+// assumes accessiblePositions has values from part 1
+while (accessiblePositions.Count > 0)
 {
-    accessible = 0;
     accessiblePositions.Clear();
 
     for (int row = 0; row < input.Count; row++)
@@ -39,12 +34,12 @@ while (accessible > 0)
             if (IsAccessible(input, row, col))
             {
                 accessiblePositions.Add((row, col));
-                accessible++;
             }
         }
     }
-    //Console.WriteLine($"Found {accessible} accessible rolls this round.");
+    //Console.WriteLine($"Found {accessiblePositions.Count} accessible rolls this round.");
 
+    // replace accessible rolls with open spaces "."
     foreach (var (row, col) in accessiblePositions)
     {
         input[row][col] = '.';

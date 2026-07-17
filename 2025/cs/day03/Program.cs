@@ -2,7 +2,7 @@ using Common;
 
 Console.WriteLine("Day 03: Lobby");
 
-string[] input = InputReader.ReadLines("inputSample.txt");
+string[] input = InputReader.ReadLines("input.txt");
 
 long answerPt1 = GetMaxJoltage(input, 2); ;
 
